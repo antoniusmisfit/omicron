@@ -1,0 +1,255 @@
+#!/usr/bin/env bash
+
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 3 of the License, or
+#  (at your option) any later version.
+#  
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#  
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
+
+#If you change the name of the executable, the directory structure of
+#and config file of any blog you create with the newly named script
+#will reflect it.
+progname="$(basename $0)"
+progauthor="Jose Anthony Agudo"
+progweb="https://github.com/antoniusmisfit/omicron/"
+
+do_help()
+{
+cat << EOF
+$progname: A tiny HTML5 blog engine suitable for text-based browsers.
+
+Usages:
+$progname [-e postname] [-d postname] -c -l -h
+
+-e postname	Create or edit an entry to a blog. If blog does not exist, it is created.
+-d postname	Delete a specified blog entry and update the blog accordingly.
+-l			List the entry names in the current blog.
+-c			Edit the blog configuration file and update the blog accordingly.
+-h			Show this help page.
+
+Notes:
+When creating a new entry to the blog, $progname uses the first and second lines of the file as the title of the entry and category tags, respectively.
+EOF
+}
+
+get_config()
+{
+if [ -e ./.$progname.config ];then
+	source ./.$progname.config
+else
+	cat > ./.$progname.config << EOF
+blogtitle="untitled"
+blogauthor="$(whoami)"
+font="sans"
+css="light"
+webroot="http://localhost:8000"
+EOF
+	source ./.$progname.config
+fi
+}
+
+init_blog()
+{
+get_config
+#A couple of CSS themes for the blog. Feel free to create your own as you see fit.
+if [ ! -e ./.$progname/ ];then
+	mkdir -p ./.$progname/categories
+fi
+cat > ./.$progname/light.css << EOF
+html{font-family: "$font";background-color: white;color: black}
+#rss{text-align: center;color: orange}
+#footer,#header,#nav{text-align: center;color: white;background-color: royalblue}
+EOF
+cat > ./.$progname/dark.css << EOF
+html{font-family: "$font";background-color: black;color: white}
+#rss{text-align: center;color: orange}
+#footer,#header,#nav{text-align: center;color: white;background-color: darkred}
+EOF
+}
+
+gen_index()
+{
+cat > ./index.html << EOF
+<!doctype html>
+<html>
+<head>
+<title>$blogtitle</title>
+<link rel="stylesheet" type="text/css" href="$webroot/.$progname/$css.css">
+</head>
+<body>
+<div id="header">$blogtitle</div>
+<pre>
+EOF
+for eachfile in $(ls -c ./.$progname/*.raw); do
+if [ -e $eachfile ];then
+gen_entry $eachfile
+cat >> ./index.html << EOF
+<article>
+<strong>$(head -n 1 $eachfile)</strong>
+
+$(fmt -s $eachfile | tail -n +3 | head -n 5)
+<strong><a href="$webroot/.$progname/$(basename $eachfile .raw).html">[$(tail -n +3 $eachfile | wc -w) more words...]</a></strong>
+</article>
+EOF
+fi
+done
+cat >> ./index.html << EOF
+</pre>
+<div id ="footer">
+Powered by $progname. Copyright &copy; 2015-$(date "+%Y") <a href="$progweb">$progauthor</a>
+</div>
+EOF
+if [ -e ./.$progname/rss.xml ];then
+cat >> ./index.html << EOF
+<div id="rss">
+<a href="$webroot/.$progname/rss.xml">RSS</a>
+</div>
+EOF
+fi
+cat >> ./index.html << EOF
+</body>
+</html>
+EOF
+}
+
+gen_entry()
+{
+if [ -e $1 ];then
+title="$(head -n 1 $1)"
+cat > ./.$progname/$(basename $1 .raw).html << EOF
+<!doctype html>
+<html>
+<head>
+<title>$title</title>
+<link rel="stylesheet" type="text/css" href="$css.css">
+</head>
+<body>
+<div id="nav">
+<a href="$webroot/index.html">[index]</a> <a href="$webroot/.$progname/$(basename $1)">[raw]</a>
+</div>
+<pre>
+TITLE: $title
+AUTHOR: $blogauthor
+DATE: $(stat --format="%y" $1)
+CATEGORIES: $(head $1 -n 2| tail -n 1)
+----------
+
+$(tail -n +3 $1 | fmt -s)
+
+----------
+
+</pre>
+<div id="nav">
+<a href="https://www.facebook.com/sharer/sharer.php?u=$webroot/.$progname/$(basename $1 .raw).html">[Share to Facebook]</a>
+</div>
+</body>
+</html>
+EOF
+fi
+}
+
+gen_rss()
+{
+get_config
+cat > ./.$progname/rss.xml << EOF
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+<channel>
+<title>$blogtitle</title>
+<link>$webroot</link>
+<description>$blogtitle</description>
+<language>en-us</language>
+EOF
+for eachfile in $(ls -c ./.$progname/*.raw);do
+cat >> ./.$progname/rss.xml << EOF
+<item>
+<title>$(head -n 1 $eachfile)</title>
+<link>$webroot/.omicron/$(basename $eachfile .raw).html</link>
+<description>$(tail -n +3 $eachfile | head -n 5)</description>
+<guid>$webroot/.omicron/$(basename $eachfile .raw).html</guid>
+</item>
+EOF
+done
+cat >> ./.$progname/rss.xml << EOF
+</channel>
+</rss>
+EOF
+}
+
+search_category()
+{
+for eachfile in $(ls -c ./.$progname/*.raw);do
+cats="$(tail -n +2 $eachfile | head -n 1)"
+for eachcat in $cats;do
+if [ "$1" == "$eachcat" ];then
+echo $(basename $eachfile .raw)
+fi
+done
+done
+}
+
+make_category()
+{
+filelist="$(search_category $1)"
+cat > ./.$progname/categories/$1.html << EOF
+<!doctype html>
+<html>
+<head>
+<title>Category page for $1</title>
+<link rel="stylesheet" type="text/css" href="$webroot/.$progname/$css.css">
+</head>
+<body>
+<div id="header">Category page for $1</div>
+<pre>
+EOF
+for eachfile in $filelist;do
+cat >> ./.$progname/categories/$1.html << EOF
+<article>
+<strong><a href="$webroot/.$progname/$eachfile.html">$(head -n 1 $(pwd)/.$progname/$eachfile.raw)</a></strong>
+</article>
+EOF
+done
+cat >> ./.$progname/categories/$1.html << EOF
+</pre>
+</body>
+</html>
+EOF
+}
+
+make_all_categories()
+{
+get_config
+catlist=
+for eachfile in ./.omicron/*.raw;do
+catlist="$catlist $(head -n 2 $eachfile| tail -n +2)"
+done
+catlist="$(echo "$catlist" | xargs -n1 | sort -u | xargs)"
+for eachcat in $catlist;do
+make_category $eachcat
+done
+}
+
+while getopts "e:d:cmlh" option ;do
+	case "$option" in
+		e) mkdir -p ./.$progname;vim ./.$progname/${OPTARG}.raw;;
+		d) rm ./.$progname/${OPTARG}.{raw,html};;
+		c) get_config;vim ./.$progname.config;;
+		l) for eachfile in ./.$progname/*.raw;do echo $(basename $eachfile .raw);done;exit;;
+		h) do_help;exit;;
+		*) do_help;exit;;
+	esac
+done
+init_blog
+gen_rss
+make_all_categories
+gen_index
