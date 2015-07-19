@@ -3,7 +3,7 @@ A tiny HTML5 blog engine suitable for text-based browsers, inspired by Vee.
 
 Installation:
 
-You can simply drop the main "omicron" shell script anywhere in your system's $PATH, preferably in /usr/local/bin.
+You can simply drop the main "omicron" shell script anywhere in your system's $PATH, preferably in /usr/local/bin. Alternatively, you can use "omicron-tiny" if you prefer a single-page style blog.
 
 Basic usage:
 

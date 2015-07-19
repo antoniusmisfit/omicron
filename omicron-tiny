@@ -106,6 +106,9 @@ cat >> ./index.html << EOF
 <div id ="footer">
 Powered by $progname. Copyright &copy; 2015-$(date "+%Y") <a href="$progweb" target="_blank">$progauthor</a>
 </div>
+<div id="rss">
+<a href="$webroot/.$progname/rss.xml">RSS</a>
+</div>
 </body>
 </html>
 EOF
