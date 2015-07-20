@@ -230,7 +230,7 @@ make_all_categories()
 {
 get_config
 catlist=
-for eachfile in ./.omicron/*.raw;do
+for eachfile in ./.$progname/*.raw;do
 catlist="$catlist $(head -n 2 $eachfile| tail -n +2)"
 done
 catlist="$(echo "$catlist" | xargs -n1 | sort -u | xargs)"
