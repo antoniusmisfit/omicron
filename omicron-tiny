@@ -79,7 +79,7 @@ EOF
 
 gen_index()
 {
-cat > ./index.html << EOF
+cat >> ./index.html << EOF
 <!doctype html>
 <html>
 <head>
@@ -95,6 +95,7 @@ if [ -e $eachfile ];then
 cat >> ./index.html << EOF
 <article id="$(basename $eachfile .raw)">
 <a href="#$(basename $eachfile .raw)"><strong>$(head -n 1 $eachfile)</strong></a>
+by $blogauthor on $(stat -c "%y" $eachfile)
 
 $(fmt -s $eachfile | tail -n +3)
 <a href="https://www.facebook.com/sharer/sharer.php?u=$webroot/index.html#$(basename $eachfile .raw)">[Share to Facebook]</a> <a href="https://twitter.com/share?url=$webroot/index.html#$(basename $eachfile .raw)">[Share to Twitter]</a>
