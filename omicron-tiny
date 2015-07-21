@@ -79,7 +79,7 @@ EOF
 
 gen_index()
 {
-cat >> ./index.html << EOF
+cat > ./index.html << EOF
 <!doctype html>
 <html>
 <head>
