@@ -256,7 +256,7 @@ while getopts "e:d:cmlC:h" option ;do
 		e) mkdir -p ./.$progname;vim ./.$progname/${OPTARG}.raw;;
 		d) rm ./.$progname/${OPTARG}.{raw,html};;
 		c) get_config;vim ./.$progname.config;;
-		C) do_command $1;;
+		C) do_command {OPTARG[*]};;
 		l) for eachfile in ./.$progname/*.raw;do echo $(basename $eachfile .raw);done;exit;;
 		h) do_help;exit;;
 		*) do_help;exit;;

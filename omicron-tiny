@@ -150,7 +150,7 @@ do_command()
 mkdir -p ./.$progname
 entryfile="./.$progname/cmd-$(date "+%s").raw"
 cat > $entryfile << EOF
-Output of "$1"
+Output of "$*"
 commnd log
 $($1)
 EOF
@@ -161,7 +161,7 @@ while getopts "e:d:cC:mlh" option ;do
 		e) mkdir -p ./.$progname;vim ./.$progname/${OPTARG}.raw;;
 		d) rm ./.$progname/${OPTARG}.raw;;
 		c) get_config;vim ./.$progname.config;;
-		C) do_command $1;;
+		C) do_command "${OPTARG[*]}";;
 		l) for eachfile in ./.$progname/*.raw;do echo $(basename $eachfile .raw);done;exit;;
 		h) do_help;exit;;
 		*) do_help;exit;;
