@@ -151,7 +151,7 @@ mkdir -p ./.$progname
 entryfile="./.$progname/cmd-$(date "+%s").raw"
 cat > $entryfile << EOF
 Output of "$*"
-commnd log
+command log
 $($1)
 EOF
 }
