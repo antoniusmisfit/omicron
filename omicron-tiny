@@ -29,11 +29,12 @@ cat << EOF
 $progname: A tiny single-page HTML5 blog engine suitable for text-based browsers.
 
 Usages:
-$progname [-e postname] [-d postname] -c -l -h
+$progname [-e postname] [-d postname] [-C "command"] -c -l -h
 
 -e postname	Create or edit an entry to a blog. If blog does not exist, it is created.
 -d postname	Delete a specified blog entry and update the blog accordingly.
 -l			List the entry names in the current blog.
+-C command	Pipe the output of a command into it's own blog entry.
 -c			Edit the blog configuration file and update the blog accordingly.
 -h			Show this help page.
 
@@ -84,7 +85,7 @@ cat > ./index.html << EOF
 <html>
 <head>
 <title>$blogtitle</title>
-<link rel="stylesheet" type="text/css" href="$webroot/.$progname/$css.css">
+<link rel="stylesheet" type="text/css" href="/.$progname/$css.css">
 </head>
 <body>
 <div id="header">$blogtitle</div>
@@ -144,11 +145,23 @@ cat >> ./.$progname/rss.xml << EOF
 EOF
 }
 
-while getopts "e:d:cmlh" option ;do
+do_command()
+{
+mkdir -p ./.$progname
+entryfile="./.$progname/cmd-$(date "+%s").raw"
+cat > $entryfile << EOF
+Output of "$1"
+commnd log
+$($1)
+EOF
+}
+
+while getopts "e:d:cC:mlh" option ;do
 	case "$option" in
 		e) mkdir -p ./.$progname;vim ./.$progname/${OPTARG}.raw;;
 		d) rm ./.$progname/${OPTARG}.raw;;
 		c) get_config;vim ./.$progname.config;;
+		C) do_command $1;;
 		l) for eachfile in ./.$progname/*.raw;do echo $(basename $eachfile .raw);done;exit;;
 		h) do_help;exit;;
 		*) do_help;exit;;

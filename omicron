@@ -35,6 +35,7 @@ $progname [-e postname] [-d postname] -c -l -h
 -d postname	Delete a specified blog entry and update the blog accordingly.
 -l			List the entry names in the current blog.
 -c			Edit the blog configuration file and update the blog accordingly.
+-C command	Pipe the output of a command into it's own blog entry.
 -h			Show this help page.
 
 Notes:
@@ -186,6 +187,17 @@ cat >> ./.$progname/rss.xml << EOF
 EOF
 }
 
+do_command()
+{
+mkdir -p ./.$progname
+entryfile="./.$progname/cmd-$(date "+%s").raw"
+cat > $entryfile << EOF
+Output of "$1"
+command log
+$($1)
+EOF
+}
+
 search_category()
 {
 for eachfile in $(ls -c ./.$progname/*.raw);do
@@ -239,11 +251,12 @@ make_category $eachcat
 done
 }
 
-while getopts "e:d:cmlh" option ;do
+while getopts "e:d:cmlC:h" option ;do
 	case "$option" in
 		e) mkdir -p ./.$progname;vim ./.$progname/${OPTARG}.raw;;
 		d) rm ./.$progname/${OPTARG}.{raw,html};;
 		c) get_config;vim ./.$progname.config;;
+		C) do_command $1;;
 		l) for eachfile in ./.$progname/*.raw;do echo $(basename $eachfile .raw);done;exit;;
 		h) do_help;exit;;
 		*) do_help;exit;;

@@ -19,9 +19,6 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-#Note: This script should only be used as a basic test for Omicron blog output
-#      hosted on a server. It is recommended that more mature server software
-#      such as Apache or NGINX be used for deployment.
 import SimpleHTTPServer
 
 print '''
