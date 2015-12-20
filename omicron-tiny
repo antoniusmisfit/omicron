@@ -85,7 +85,7 @@ cat > ./index.html << EOF
 <html>
 <head>
 <title>$blogtitle</title>
-<link rel="stylesheet" type="text/css" href="/.$progname/$css.css">
+<link rel="stylesheet" type="text/css" href="$webroot/.$progname/$css.css">
 </head>
 <body>
 <div id="header">$blogtitle</div>
