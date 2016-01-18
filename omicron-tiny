@@ -20,7 +20,7 @@
 #and config file of any blog you create with the newly named script
 #will reflect it.
 progname="$(basename $0)"
-progauthor="Jose Anthony Agudo"
+progauthor="Tony Agudo"
 progweb="https://github.com/antoniusmisfit/omicron/"
 
 do_help()
@@ -29,17 +29,19 @@ cat << EOF
 $progname: A tiny single-page HTML5 blog engine suitable for text-based browsers.
 
 Usages:
-$progname [-e postname] [-d postname] [-C "command"] -c -l -h
+$progname [-e postname] [-d postname] [-C "command"] [-t theme] -c -l -h
 
 -e postname	Create or edit an entry to a blog. If blog does not exist, it is created.
 -d postname	Delete a specified blog entry and update the blog accordingly.
 -l			List the entry names in the current blog.
 -C command	Pipe the output of a command into it's own blog entry.
 -c			Edit the blog configuration file and update the blog accordingly.
+-t			Generate a new CSS theme for the blog.
 -h			Show this help page.
 
 Notes:
 When creating a new entry to the blog, $progname uses the first line of the file as the title of the entry, and from the third to last line as the post body.
+Website: $progweb
 EOF
 }
 
@@ -99,7 +101,7 @@ cat >> ./index.html << EOF
 by $blogauthor on $(stat -c "%y" $eachfile)
 
 $(fmt -s $eachfile | tail -n +3)
-<a href="https://www.facebook.com/sharer/sharer.php?u=$webroot/index.html#$(basename $eachfile .raw)">[Share to Facebook]</a> <a href="https://twitter.com/share?url=$webroot/index.html#$(basename $eachfile .raw)">[Share to Twitter]</a>
+Share: <a href="https://www.facebook.com/sharer/sharer.php?u=$webroot/index.html#$(basename $eachfile .raw)">[Facebook]</a> <a href="https://twitter.com/share?url=$webroot/index.html#$(basename $eachfile .raw)">[Twitter]</a>
 </article>
 EOF
 fi
@@ -156,13 +158,25 @@ $($1)
 EOF
 }
 
-while getopts "e:d:cC:mlh" option ;do
+gen_css_theme()
+{
+get_config
+cat >./.$progname/$1.css << EOF
+html{font-family: "$font";background-color: white;color: black}
+#rss{text-align: center;color: orange}
+#footer,#header,#nav{text-align: center;color: white;background-color: royalblue}
+EOF
+echo "./.$progname/$1.css created! Please edit this file to your liking."
+}
+
+while getopts "e:d:cC:mlt:h" option ;do
 	case "$option" in
 		e) mkdir -p ./.$progname;vim ./.$progname/${OPTARG}.raw;;
 		d) rm ./.$progname/${OPTARG}.raw;;
 		c) get_config;vim ./.$progname.config;;
 		C) do_command "${OPTARG[*]}";;
 		l) for eachfile in ./.$progname/*.raw;do echo $(basename $eachfile .raw);done;exit;;
+		t) gen_css_theme "${OPTARG}";exit;;
 		h) do_help;exit;;
 		*) do_help;exit;;
 	esac
