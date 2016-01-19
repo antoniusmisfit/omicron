@@ -54,7 +54,9 @@ html{font-family: "sans";background-color: white;color: black}
 </style>
 </head>
 <body>
+<!--
 <div id="header">$title</div>
+-->
 <pre>
 `$fmtcmd $infile`
 </pre>
