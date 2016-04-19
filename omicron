@@ -257,7 +257,7 @@ while getopts "e:d:cmlC:h" option ;do
 		d) rm ./.$progname/${OPTARG}.{raw,html};;
 		c) get_config;vim ./.$progname.config;;
 		C) do_command {OPTARG[*]};;
-		l) for eachfile in ./.$progname/*.raw;do echo $(basename $eachfile .raw);done;exit;;
+		l) for eachfile in ./.$progname/*.raw;do echo "$(basename $eachfile .raw) - $(head -n1 $eachfile)";done;exit;;
 		h) do_help;exit;;
 		*) do_help;exit;;
 	esac
