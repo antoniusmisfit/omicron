@@ -33,7 +33,7 @@ $progname [-e postname] [-d postname] -c -l -h
 
 -e postname	Create or edit an entry to a blog. If blog does not exist, it is created.
 -d postname	Delete a specified blog entry and update the blog accordingly.
--l			List the entry names in the current blog.
+-l			List the entry names and titles in the current blog.
 -c			Edit the blog configuration file and update the blog accordingly.
 -C command	Pipe the output of a command into it's own blog entry.
 -h			Show this help page.
