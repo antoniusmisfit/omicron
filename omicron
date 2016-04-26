@@ -84,6 +84,8 @@ cat > ./index.html << EOF
 <!doctype html>
 <html>
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>$blogtitle</title>
 <link rel="stylesheet" type="text/css" href="$webroot/.$progname/$css.css">
 </head>
@@ -131,6 +133,8 @@ cat > ./.$progname/$(basename $1 .raw).html << EOF
 <!doctype html>
 <html>
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>$title</title>
 <link rel="stylesheet" type="text/css" href="$css.css">
 </head>
