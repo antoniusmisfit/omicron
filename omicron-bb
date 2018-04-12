@@ -102,7 +102,7 @@ cat >> ./index.html << EOF
 <a href="#$(basename $eachfile .raw)"><strong>$(head -n 1 $eachfile)</strong></a>
 by $blogauthor on $(stat -c "%y" $eachfile)
 
-$(fmt -s $eachfile | tail -n +3)
+$(cat $eachfile | tail -n +3)
 Share: <a href="https://www.facebook.com/sharer/sharer.php?u=$webroot/index.html#$(basename $eachfile .raw)">[Facebook]</a> <a href="https://twitter.com/share?url=$webroot/index.html#$(basename $eachfile .raw)">[Twitter]</a>
 </article>
 EOF
@@ -176,9 +176,9 @@ eval set -- "$ARGS"
 
 while true;do
 	case "$1" in
-		-e) shift;mkdir -p ./.$progname;vim ./$progname/$1.raw;shift;;
+		-e) shift;mkdir -p ./.$progname;vi ./$progname/$1.raw;shift;;
 		-d) rm ./.$progname/$1.raw;shift;;
-		-c) get_config;vim ./.$progname.config;shift;;
+		-c) get_config;vi ./.$progname.config;shift;;
 		-C) do_command "$1";shift;;
 		-l) for eachfile in ./.$progname/*.raw;do echo "$(basename $eachfile .raw) - $(head -n1 $eachfile)";done;shift;exit;;
 		-t)shift;gen_css_theme "$1";exit;;
