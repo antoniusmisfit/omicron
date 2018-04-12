@@ -171,7 +171,7 @@ EOF
 echo "./.$progname/$1.css created! Please edit this file to your liking."
 }
 
-if [ $# -lt 2 ];then
+if [ $# -lt 1 ];then
 	do_help;
 	exit;
 fi
