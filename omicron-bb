@@ -138,7 +138,7 @@ cat >> ./.$progname/rss.xml << EOF
 <item>
 <title>$(head -n 1 $eachfile)</title>
 <link>$webroot/index.html#$(basename $eachfile .raw)</link>
-<description>$(tail -n +3 $eachfile | fmt -s | head -n 3)</description>
+<description>$(tail -n +3 $eachfile | head -n 3)</description>
 <guid>$webroot/index.html#$(basename $eachfile .raw)</guid>
 </item>
 EOF
