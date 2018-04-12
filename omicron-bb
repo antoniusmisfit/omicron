@@ -171,20 +171,20 @@ EOF
 echo "./.$progname/$1.css created! Please edit this file to your liking."
 }
 
-ARGS=$(getopt -o e:d:cC:mlt:h -n "$progname" -- "$@");
-eval set -- "$ARGS"
+if [ $# -lt 2 ];then
+	do_help;
+	exit;
+fi
 
-while true;do
-	case "$1" in
-		-e) shift;mkdir -p ./.$progname;vi ./$progname/$1.raw;shift;;
-		-d) rm ./.$progname/$1.raw;shift;;
-		-c) get_config;vi ./.$progname.config;shift;;
-		-C) do_command "$1";shift;;
-		-l) for eachfile in ./.$progname/*.raw;do echo "$(basename $eachfile .raw) - $(head -n1 $eachfile)";done;shift;exit;;
-		-t)shift;gen_css_theme "$1";exit;;
-		*) do_help;exit;;
-	esac
-done
+case "$1" in
+	-e|-edit) mkdir -p ./.$progname;vi .$progname/$2.raw;;
+	-d|-delete) rm ./.$progname/$2.raw;;
+	-c|-config) get_config;vi ./.$progname.config;;
+	-C|-command) do_command "$2";;
+	-l|-list) for eachfile in ./.$progname/*.raw;do echo "$(basename $eachfile .raw) - $(head -n1 $eachfile)";done;exit;;
+	-t|-theme) gen_css_theme "$2";exit;;
+	*) do_help;exit;;
+esac
 
 init_blog
 gen_index
