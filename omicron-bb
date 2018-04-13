@@ -29,18 +29,18 @@ cat << EOF
 $progname: A tiny single-page HTML5 blog engine suitable for text-based browsers.
 
 Usages:
-$progname [-e postname] [-d postname] [-C "command"] [-t theme] -c -l -h
+$progname -OPTION [ARG]
 
--e postname	Create or edit an entry to a blog. If blog does not exist, it is created.
--d postname	Delete a specified blog entry and update the blog accordingly.
--l			List the entry names and titles in the current blog.
--C command	Pipe the output of a command into it's own blog entry.
--c			Edit the blog configuration file and update the blog accordingly.
--t			Generate a new CSS theme for the blog.
--h			Show this help page.
+-edit postname	Create or edit an entry to a blog. If blog does not exist, it is created.
+-delete postname	Delete a specified blog entry and update the blog accordingly.
+-list			List the entry names and titles in the current blog.
+-Command command	Pipe the output of a command into it's own blog entry.
+-config			Edit the blog configuration file and update the blog accordingly.
+-theme			Generate a new CSS theme for the blog.
+-help			Show this help page.
 
 Notes:
-When creating a new entry to the blog, $progname uses the first line of the file as the title of the entry, and from the third to last line as the post body.
+When creating a new entry to the blog, $progname uses the first line of the file as the title of the entry, and from the third to last line as the post body. Also, all options have an first letter form.
 Website: $progweb
 EOF
 }
