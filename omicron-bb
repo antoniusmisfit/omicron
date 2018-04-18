@@ -55,6 +55,7 @@ blogtitle="untitled"
 blogauthor="$(whoami)"
 font="sans"
 css="light"
+#If using Busybox httpd applet, use http://127.0.0.1:8000 for webroot
 webroot="http://localhost:8000"
 EOF
 	source ./.$progname.config
